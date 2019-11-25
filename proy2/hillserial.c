@@ -69,7 +69,7 @@ int main(int argc, char* argv[]) {
     // Abre archivo a cifrar
     fp = openFile(argv[3], "r");
 
-    // Abre archivo cifrado
+    // Abre archivo intermedio
     FILE* fpWr = openFile("treated.txt", "w");
 
     // Lee palabras caracteres alfabeticos y convierte a MAYUSCULAS
@@ -83,32 +83,36 @@ int main(int argc, char* argv[]) {
     fclose(fp);
     fclose(fpWr);
 
+    char crypted[255] = "crypt-";
+    strcat(crypted, argv[3]);
+
     // Abrir archivo intermedio y destino
     fp = openFile("treated.txt", "r");
-    fpWr = openFile ("encrypted.txt", "w");
+    fpWr = openFile (crypted, "w");
     int vectX[n];
     int vectY[n];
     int loop = 1;
     // Lee del archivo y agrupa en n caracteres
     for (int i = 0; loop; i++){
         // No se ha llegado a EOF
-        if (feof(fp) == 0){
+        if (!feof(fp)){
             c = fgetc(fp);
             // Guarda valor del caracter leido segun alfabeto
             vectX[i] = alphCharToInt(c, alph, sizeAlph);
 
         // Llego EOF y no termino agrupacion
-        } else if(i < (n-1)){
-            // se iteran elementos restantes
-            for (; i < n; i++){
-                vectX[i] = 23; // X
-                // Se hace ultima transformacion y se deja de iterar
-                loop = 0;
+        } else {
+            loop = 0;
+            if(i < n){
+                // se iteran elementos restantes
+                for (; i < n; i++){
+                    vectX[i] = 23; // X
+                }
             }
         }
 
         // Se termino de agrupar vector
-        if (i >= (n-1)){
+        if (i == n){
             // Transformación lineal a vectY
             multiply(n, matA, vectX, vectY);
             // Escribir vectY a char en archivo destino
@@ -118,12 +122,12 @@ int main(int argc, char* argv[]) {
                 c = alphIntToChar(vectY[j], alph, sizeAlph);
                 fprintf(fpWr, "%c", c);
             }
-            i = 0;
+            i = -1;
         }
     }
-    remove("treated.txt");
     fclose(fp);
     fclose(fpWr);
+    remove("treated.txt");
     return 0;
 }
 
