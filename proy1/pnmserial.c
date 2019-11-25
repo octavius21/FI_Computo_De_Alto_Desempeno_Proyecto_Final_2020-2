@@ -4,7 +4,7 @@
 
 FILE* openFile(char* filename, char* option);
  
-int main(int argc, char* argv[]) {
+int main(int argc, char* argv[]){
     // Revisar argumento
     if (argc < 2){
         printf("Uso: pnmserial <imagen pnm>\n");
